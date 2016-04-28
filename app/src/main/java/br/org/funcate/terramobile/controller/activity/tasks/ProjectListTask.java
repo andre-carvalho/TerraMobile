@@ -29,7 +29,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import br.org.funcate.terramobile.R;
-import br.org.funcate.terramobile.controller.activity.MainActivity;
+import br.org.funcate.terramobile.controller.activity.TerraMobileApp;
 import br.org.funcate.terramobile.model.domain.Project;
 import br.org.funcate.terramobile.model.exception.InvalidAppConfigException;
 import br.org.funcate.terramobile.model.exception.ProjectException;
@@ -41,15 +41,15 @@ import br.org.funcate.terramobile.util.Util;
  * This AsyncTask receives a list of geopackages from the server
  */
 public class ProjectListTask extends AsyncTask<String, String, JSONObject> {
-    public MainActivity mainActivity;
+    public TerraMobileApp terraMobileApp;
 
-    public ProjectListTask(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
+    public ProjectListTask(TerraMobileApp terraMobileApp) {
+        this.terraMobileApp = terraMobileApp;
     }
 
     @Override
     protected void onPreExecute() {
-        mainActivity.showDefaultLoadingDialog(mainActivity.getString(R.string.loading_prj_list));
+        terraMobileApp.showDefaultLoadingDialog(terraMobileApp.getString(R.string.loading_prj_list));
     }
 
     protected JSONObject doInBackground(String... url) {
@@ -59,7 +59,7 @@ public class ProjectListTask extends AsyncTask<String, String, JSONObject> {
         JSONObject jsonObject;
         String jsonContent;
         try {
-            if (Util.isConnected(mainActivity)) {
+            if (Util.isConnected(terraMobileApp)) {
 
 
                 HttpParams httpParams = new BasicHttpParams();
@@ -129,12 +129,12 @@ public class ProjectListTask extends AsyncTask<String, String, JSONObject> {
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
         try {
-            mainActivity.getProgressDialog().dismiss();
+            terraMobileApp.getProgressDialog().dismiss();
 
-            File appPath = Util.getDirectory(mainActivity.getString(R.string.app_workspace_dir));
+            File appPath = Util.getDirectory(terraMobileApp.getString(R.string.app_workspace_dir));
 
             ArrayList<Project> aLItems = new ArrayList<Project>();
-            ArrayList<File> files = Util.getGeoPackageFiles(appPath, mainActivity.getString(R.string.geopackage_extension));
+            ArrayList<File> files = Util.getGeoPackageFiles(appPath, terraMobileApp.getString(R.string.geopackage_extension));
             if (files != null && !files.isEmpty()) {
                 for (File file : files) {
                     String destinationFilePath = appPath.getPath() + "/" + file.getName();
@@ -150,9 +150,9 @@ public class ProjectListTask extends AsyncTask<String, String, JSONObject> {
                     String description = "";
 
                     try {
-                        UUID = ProjectsService.getUUID(mainActivity, file.getAbsolutePath());
-                        status = ProjectsService.getStatus(mainActivity, file.getAbsolutePath());
-                        description = ProjectsService.getDescription(mainActivity, file.getAbsolutePath());
+                        UUID = ProjectsService.getUUID(terraMobileApp, file.getAbsolutePath());
+                        status = ProjectsService.getStatus(terraMobileApp, file.getAbsolutePath());
+                        description = ProjectsService.getDescription(terraMobileApp, file.getAbsolutePath());
                     } catch (InvalidAppConfigException e) {
                         e.printStackTrace();
                     } catch (ProjectException e) {
@@ -184,7 +184,7 @@ public class ProjectListTask extends AsyncTask<String, String, JSONObject> {
 
                     String destinationFilePath = appPath.getPath() + "/" + name;
 
-                    File file = Util.getGeoPackageByName(appPath, mainActivity.getString(R.string.geopackage_extension), name);
+                    File file = Util.getGeoPackageByName(appPath, terraMobileApp.getString(R.string.geopackage_extension), name);
                     if (file == null) {
                         Project project = new Project();
                         project.setName(name);
@@ -207,13 +207,13 @@ public class ProjectListTask extends AsyncTask<String, String, JSONObject> {
             }
 
             if (!aLItems.isEmpty())
-                mainActivity.getProjectListFragment().setListItems(aLItems);
+                terraMobileApp.getProjectListFragment().setListItems(aLItems);
             else {
-                mainActivity.getProjectListFragment().dismiss();
-                Message.showErrorMessage(mainActivity, R.string.error, R.string.projects_not_found);
+                terraMobileApp.getProjectListFragment().dismiss();
+                Message.showErrorMessage(terraMobileApp, R.string.error, R.string.projects_not_found);
             }
         } catch (JSONException e) {
-            Message.showErrorMessage(mainActivity, R.string.error, R.string.connection_failed);
+            Message.showErrorMessage(terraMobileApp, R.string.error, R.string.connection_failed);
             e.printStackTrace();
         }
     }

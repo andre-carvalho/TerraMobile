@@ -134,12 +134,11 @@ public class Util {
             path = Environment.getDataDirectory().getAbsolutePath();
         }
         File file = new File(path);
-        if(file!=null && file.canWrite()) {
+        if(file.canWrite()) {
             path += directory.startsWith("/") ? "" : "/";
             path += directory.endsWith("/") ? directory : directory + "/";
             file = new File(path);
-            file.mkdirs();
-            if (file.isDirectory())
+            if (file.mkdirs() && file.isDirectory())
                 return file;
         }
         return null;

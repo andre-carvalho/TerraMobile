@@ -15,7 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import br.org.funcate.terramobile.R;
-import br.org.funcate.terramobile.controller.activity.MainActivity;
+import br.org.funcate.terramobile.controller.activity.TerraMobileApp;
 import br.org.funcate.terramobile.controller.activity.MenuMapController;
 import br.org.funcate.terramobile.controller.activity.TreeViewController;
 import br.org.funcate.terramobile.model.exception.InvalidAppConfigException;
@@ -39,7 +39,7 @@ public class TreeViewAdapter extends BaseExpandableListAdapter implements View.O
         this.context = context;
         this.groupItem = grpList;
         this.childItem = childItem;
-        this.menuMapController = ((MainActivity) context).getMainController().getMenuMapController();
+        this.menuMapController = ((TerraMobileApp) context).getTerraMobileAppController().getMenuMapController();
         editableLayerRBList = new ArrayList<RadioButton>();
     }
 
@@ -72,7 +72,7 @@ public class TreeViewAdapter extends BaseExpandableListAdapter implements View.O
                 case EDITABLE:{// editable (vector points)
                     this.unselectAllRadioButtons(editableLayerRBList);
 
-                    TreeViewController treeView=((MainActivity) this.context).getMainController().getTreeViewController();
+                    TreeViewController treeView=((TerraMobileApp) this.context).getTerraMobileAppController().getTreeViewController();
                     GpkgLayer ed = treeView.getSelectedEditableLayer();
                     if(ed!=null)
                         menuMapController.disableLayer(ed);
@@ -94,25 +94,25 @@ public class TreeViewAdapter extends BaseExpandableListAdapter implements View.O
        }
         catch (LowMemoryException e) {
             e.printStackTrace();
-            Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+            Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
         }
         catch (InvalidAppConfigException e) {
             e.printStackTrace();
-            Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+            Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
         }
         catch (TerraMobileException e) {
             e.printStackTrace();
-            Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+            Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
         } catch (StyleException e) {
             e.printStackTrace();
-            Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+            Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
         } catch (SettingsException e) {
             e.printStackTrace();
-            Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+            Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
         }
         catch (Exception e) {
             e.printStackTrace();
-            Message.showErrorMessage(((MainActivity) context), R.string.error, context.getResources().getString(R.string.unexpected_exception));
+            Message.showErrorMessage(((TerraMobileApp) context), R.string.error, context.getResources().getString(R.string.unexpected_exception));
         }
     }
 
@@ -306,10 +306,10 @@ public class TreeViewAdapter extends BaseExpandableListAdapter implements View.O
                 menuMapController.updateOverlaysOrder(LayersService.composeLinearLayerList(childItem));
             } catch (SettingsException e) {
                 e.printStackTrace();
-                Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+                Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
             } catch (InvalidAppConfigException e) {
                 e.printStackTrace();
-                Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+                Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
             }
             notifyDataSetChanged();
         }
@@ -334,10 +334,10 @@ public class TreeViewAdapter extends BaseExpandableListAdapter implements View.O
                 menuMapController.updateOverlaysOrder(LayersService.composeLinearLayerList(childItem));
             } catch (SettingsException e) {
                 e.printStackTrace();
-                Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+                Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
             } catch (InvalidAppConfigException e) {
                 e.printStackTrace();
-                Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+                Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
             }
 
 
@@ -368,14 +368,14 @@ public class TreeViewAdapter extends BaseExpandableListAdapter implements View.O
     @Override
     public void onGroupCollapsed(int groupPosition) {
 /*        String s=this.context.getString(R.string.app_name);
-        ((MainActivity) this.context).setTitle(s.subSequence(0,s.length()));*/
+        ((TerraMobileApp) this.context).setTitle(s.subSequence(0,s.length()));*/
         super.onGroupCollapsed(groupPosition);
     }
 
     @Override
     public void onGroupExpanded(int groupPosition) {
 /*        String s=groupItem.get(groupPosition);
-        ((MainActivity) this.context).setTitle(s.subSequence(0,s.length()));*/
+        ((TerraMobileApp) this.context).setTitle(s.subSequence(0,s.length()));*/
         super.onGroupExpanded(groupPosition);
     }
 

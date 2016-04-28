@@ -27,13 +27,16 @@
         android:theme="@android:style/Theme.Holo.Light"
         android:name="android.support.multidex.MultiDexApplication" >
         <activity
-            android:name=".controller.activity.MainActivity"
+            android:name=".controller.activity.TerraMobileApp"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="br.org.funcate.terramobile.action.TERRAMOBILE_VIEW_MAP" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="file" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.gpkg" />
+                <data android:host="*" />
             </intent-filter>
         </activity>
         <activity android:name="br.org.funcate.dynamicforms.FormActivity"

@@ -36,18 +36,18 @@ public class TreeViewController {
     private Context context;
     private TreeViewAdapter treeViewAdapter;
     private GpkgLayer selectedEditableLayer;
-    private MainController mainController;
+    private TerraMobileAppController terraMobileAppController;
 
-    public TreeViewController(Context context, MainController mainController) throws InvalidAppConfigException {
+    public TreeViewController(Context context, TerraMobileAppController terraMobileAppController) throws InvalidAppConfigException {
         this.context=context;
-        this.mainController = mainController;
+        this.terraMobileAppController = terraMobileAppController;
     }
 
     public void initTreeView() throws InvalidAppConfigException {
         setGroupData();
         setChildGroupData();
         try {
-            mDrawerList = (ExpandableListView) ((MainActivity) this.context).findViewById(R.id.expandable_tree_view);
+            mDrawerList = (ExpandableListView) ((TerraMobileApp) this.context).findViewById(R.id.expandable_tree_view);
         }catch (Exception e){
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
         }
@@ -61,7 +61,7 @@ public class TreeViewController {
     }
 
     public void setWidthToExpandableListView() {
-        DisplayMetrics displaymetrics = Util.getDisplayDimension((MainActivity) this.context);
+        DisplayMetrics displaymetrics = Util.getDisplayDimension((TerraMobileApp) this.context);
         ViewGroup.LayoutParams params = mDrawerList.getLayoutParams();
         if(displaymetrics.widthPixels < params.width) params.width = displaymetrics.widthPixels;
     }
@@ -100,13 +100,13 @@ public class TreeViewController {
             //layers = AppGeoPackageService.getLayers(this.context);
             layers = LayersService.getLayers(this.context);
         } catch (InvalidGeopackageException e) {
-            Message.showErrorMessage((MainActivity) this.context, R.string.failure_title_msg, e.getMessage());
+            Message.showErrorMessage((TerraMobileApp) this.context, R.string.failure_title_msg, e.getMessage());
         } catch (QueryException e) {
-            Message.showErrorMessage((MainActivity)this.context, R.string.failure_title_msg, e.getMessage());
+            Message.showErrorMessage((TerraMobileApp)this.context, R.string.failure_title_msg, e.getMessage());
         } catch (SettingsException e) {
-            Message.showErrorMessage((MainActivity)this.context, R.string.failure_title_msg, e.getMessage());
+            Message.showErrorMessage((TerraMobileApp)this.context, R.string.failure_title_msg, e.getMessage());
         } catch (InvalidAppConfigException e) {
-            Message.showErrorMessage((MainActivity)this.context, R.string.failure_title_msg, e.getMessage());
+            Message.showErrorMessage((TerraMobileApp)this.context, R.string.failure_title_msg, e.getMessage());
         }
 
         if (null == layers || layers.size()==0) {
@@ -234,22 +234,22 @@ public class TreeViewController {
                 if(layers.get(j).isEnabled())
                 {
                     try {
-                        mainController.getMenuMapController().enableLayer(layers.get(j));
+                        terraMobileAppController.getMenuMapController().enableLayer(layers.get(j));
                     } catch (StyleException e) {
                         e.printStackTrace();
-                        Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+                        Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
                     } catch (InvalidAppConfigException e) {
                         e.printStackTrace();
-                        Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+                        Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
                     } catch (TerraMobileException e) {
                         e.printStackTrace();
-                        Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+                        Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
                     } catch (LowMemoryException e) {
                         e.printStackTrace();
-                        Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+                        Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
                     } catch (SettingsException e) {
                         e.printStackTrace();
-                        Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+                        Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
                     }
                 }
             }

@@ -37,7 +37,7 @@ import br.org.funcate.terramobile.util.GlobalParameters;
 import br.org.funcate.terramobile.util.Message;
 import br.org.funcate.terramobile.util.ResourceHelper;
 
-public class MainActivity extends FragmentActivity implements MapEventsReceiver,Marker.OnMarkerClickListener {
+public class TerraMobileApp extends FragmentActivity implements MapEventsReceiver,Marker.OnMarkerClickListener {
     private ActionBarDrawerToggle mDrawerToggle;
 
     private ActionBar actionBar;
@@ -48,7 +48,7 @@ public class MainActivity extends FragmentActivity implements MapEventsReceiver,
 
     private ProjectListFragment projectListFragment;
 
-    private MainController mainController;
+    private TerraMobileAppController terraMobileAppController;
 
     private BroadcastReceiver mMainActivityReceiver;
 
@@ -60,7 +60,7 @@ public class MainActivity extends FragmentActivity implements MapEventsReceiver,
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        getMainController().getMarkerInfoWindowController().makeSomeProcessWithResult(requestCode, resultCode, data);
+        getTerraMobileAppController().getMarkerInfoWindowController().makeSomeProcessWithResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class MainActivity extends FragmentActivity implements MapEventsReceiver,
 
         try
         {
-            mainController = new MainController(this);
+            terraMobileAppController = new TerraMobileAppController(this);
 
         } catch (InvalidAppConfigException e) {
             e.printStackTrace();
@@ -123,7 +123,7 @@ public class MainActivity extends FragmentActivity implements MapEventsReceiver,
             insertMapView();
         }
 
-        mainController.initMain();
+        terraMobileAppController.initMain();
     }
 
     @Override
@@ -141,21 +141,21 @@ public class MainActivity extends FragmentActivity implements MapEventsReceiver,
 
     @Override
     public void onPause() {
-        System.out.println("MainActivity - onPause");
+        System.out.println("TerraMobileApp - onPause");
         super.onPause();
         // disableGPSTrackerLayer unregister location events listener too.
-        if(getMainController().getGpsOverlayController().isOverlayAdded()) {
-            getMainController().getGpsOverlayController().disableGPSTrackerLayer();
+        if(getTerraMobileAppController().getGpsOverlayController().isOverlayAdded()) {
+            getTerraMobileAppController().getGpsOverlayController().disableGPSTrackerLayer();
         }
     }
 
     @Override
     public void onResume() {
-        System.out.println("MainActivity - onResume");
+        System.out.println("TerraMobileApp - onResume");
         super.onResume();
         // enableGPSTrackerLayer register location events listener too.
-        if(getMainController().getGpsOverlayController().isOverlayAdded()) {
-            getMainController().getGpsOverlayController().enableGPSTrackerLayer();
+        if(getTerraMobileAppController().getGpsOverlayController().isOverlayAdded()) {
+            getTerraMobileAppController().getGpsOverlayController().enableGPSTrackerLayer();
         }
     }
 
@@ -165,7 +165,7 @@ public class MainActivity extends FragmentActivity implements MapEventsReceiver,
         inflater.inflate(R.menu.action_bar, menu);
 
         MenuItem menuItem = menu.findItem(R.id.project);
-        menuItem.setTitle(mainController.getCurrentProject() != null ? mainController.getCurrentProject().toString() : "Project");
+        menuItem.setTitle(terraMobileAppController.getCurrentProject() != null ? terraMobileAppController.getCurrentProject().toString() : "Project");
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -173,11 +173,11 @@ public class MainActivity extends FragmentActivity implements MapEventsReceiver,
     /* Called whenever we call invalidateOptionsMenu() */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        ExpandableListView mDrawerList=mainController.getTreeViewController().getUIComponent();
+        ExpandableListView mDrawerList= terraMobileAppController.getTreeViewController().getUIComponent();
         if(mDrawerList==null) return false;
 
         MenuItem menuItem = menu.findItem(R.id.project);
-        menuItem.setTitle(mainController.getCurrentProject() != null ? mainController.getCurrentProject().toString() : "Project");
+        menuItem.setTitle(terraMobileAppController.getCurrentProject() != null ? terraMobileAppController.getCurrentProject().toString() : "Project");
 
         // If the nav drawer is open, hide action items related to the content view
         return super.onPrepareOptionsMenu(menu);
@@ -201,7 +201,7 @@ public class MainActivity extends FragmentActivity implements MapEventsReceiver,
                 projectListFragment.show(getFragmentManager(), "packageList");
                 return true;
                                                                                                                                                                                                                                                                                                                                                                             case R.id.acquire_new_point:
-                getMainController().getMarkerInfoWindowController().startActivityForm();
+                getTerraMobileAppController().getMarkerInfoWindowController().startActivityForm();
                 break;
             case R.id.settings:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -225,8 +225,8 @@ public class MainActivity extends FragmentActivity implements MapEventsReceiver,
         MapFragment fragment = new MapFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-        fragment.setMenuMapController(mainController.getMenuMapController());
-        mainController.getMenuMapController().setMapFragment(fragment);
+        fragment.setMenuMapController(terraMobileAppController.getMenuMapController());
+        terraMobileAppController.getMenuMapController().setMapFragment(fragment);
     }
 
     @Override
@@ -266,10 +266,10 @@ public class MainActivity extends FragmentActivity implements MapEventsReceiver,
         progressDialog.setMax(100);
         progressDialog.setProgress(0);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setButton(DialogInterface.BUTTON_NEUTRAL, MainActivity.this.getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
+        progressDialog.setButton(DialogInterface.BUTTON_NEUTRAL, TerraMobileApp.this.getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                MainActivity.this.getProjectListFragment().getDownloadTask().cancel(true);
+                TerraMobileApp.this.getProjectListFragment().getDownloadTask().cancel(true);
             }
         });
         progressDialog.show();
@@ -303,12 +303,12 @@ public class MainActivity extends FragmentActivity implements MapEventsReceiver,
         return projectListFragment;
     }
 
-    public MainController getMainController() {
-        return mainController;
+    public TerraMobileAppController getTerraMobileAppController() {
+        return terraMobileAppController;
     }
 
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
+    public void setTerraMobileAppController(TerraMobileAppController terraMobileAppController) {
+        this.terraMobileAppController = terraMobileAppController;
     }
 
     @Override
@@ -325,22 +325,22 @@ public class MainActivity extends FragmentActivity implements MapEventsReceiver,
             if(intent.hasExtra(GlobalParameters.STATE_GPS_LOCATION)) {
                 Boolean showGPSLocation = intent.getBooleanExtra(GlobalParameters.STATE_GPS_LOCATION, false);
                 if (showGPSLocation) {
-                    getMainController().getGpsOverlayController().addGPSTrackerLayer();
+                    getTerraMobileAppController().getGpsOverlayController().addGPSTrackerLayer();
                 } else {
-                    getMainController().getGpsOverlayController().removeGPSTrackerLayer();
+                    getTerraMobileAppController().getGpsOverlayController().removeGPSTrackerLayer();
                 }
             }
             if(intent.hasExtra(GlobalParameters.STATE_GPS_CENTER)) {
                 Boolean showGPSLocationOnCenter = intent.getBooleanExtra(GlobalParameters.STATE_GPS_CENTER, false);
-                getMainController().getGpsOverlayController().setKeepOnCenter(showGPSLocationOnCenter);
+                getTerraMobileAppController().getGpsOverlayController().setKeepOnCenter(showGPSLocationOnCenter);
             }
         }
     }
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint geoPoint) {
-        MapView mapView = getMainController().getMapFragment().getMapView();
+        MapView mapView = getTerraMobileAppController().getMapFragment().getMapView();
         if(mapView != null){
-//            mainController.getFeatureInfoPanelController().startFeatureInfoPanel();
+//            terraMobileAppController.getFeatureInfoPanelController().startFeatureInfoPanel();
 
         }
         return true;

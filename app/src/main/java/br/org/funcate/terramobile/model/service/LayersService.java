@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import br.org.funcate.jgpkg.exception.QueryException;
-import br.org.funcate.terramobile.controller.activity.MainActivity;
+import br.org.funcate.terramobile.controller.activity.TerraMobileApp;
 import br.org.funcate.terramobile.model.db.DatabaseFactory;
 import br.org.funcate.terramobile.model.db.dao.LayerSettingsDAO;
 import br.org.funcate.terramobile.model.domain.Project;
@@ -109,7 +109,7 @@ public class LayersService {
     }
 
     public static ArrayList<GpkgLayer> getLayers(Context context) throws SettingsException, InvalidAppConfigException, QueryException, InvalidGeopackageException {
-        Project prj=((MainActivity) context).getMainController().getCurrentProject();
+        Project prj=((TerraMobileApp) context).getTerraMobileAppController().getCurrentProject();
         ArrayList<GpkgLayer> layers = new ArrayList<GpkgLayer>();
         if(prj!=null)
         {

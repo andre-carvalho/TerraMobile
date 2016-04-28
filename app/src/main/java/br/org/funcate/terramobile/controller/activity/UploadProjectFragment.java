@@ -162,7 +162,7 @@ public class UploadProjectFragment extends DialogFragment{
             }else {
                 if(this.project!=null && layers!=null && !layers.isEmpty()) {
 
-                    BuildUploadGPKGTask uploadGPKGTask = new BuildUploadGPKGTask((MainActivity) getActivity(), this.project, layers);
+                    BuildUploadGPKGTask uploadGPKGTask = new BuildUploadGPKGTask((TerraMobileApp) getActivity(), this.project, layers);
                     uploadGPKGTask.execute();
                     return true;
                 }
@@ -192,10 +192,10 @@ public class UploadProjectFragment extends DialogFragment{
         @Override
         public void confirmResponse(boolean response) {
             if(response) {
-                final String serverURL = ((MainActivity) getActivity()).getMainController().getServerURL();
+                final String serverURL = ((TerraMobileApp) getActivity()).getTerraMobileAppController().getServerURL();
                 try {
                     String filePath = ProjectsService.getUploadFilePath(getActivity(), project);
-                    UploadTask uploadTask = (UploadTask) new UploadTask(filePath, (MainActivity)getActivity()).execute(serverURL + "uploadproject/");
+                    UploadTask uploadTask = (UploadTask) new UploadTask(filePath, (TerraMobileApp)getActivity()).execute(serverURL + "uploadproject/");
 
                 } catch (InvalidAppConfigException e) {
                     e.printStackTrace();

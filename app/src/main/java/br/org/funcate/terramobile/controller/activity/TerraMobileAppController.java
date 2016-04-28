@@ -27,9 +27,9 @@ import br.org.funcate.terramobile.util.Util;
 /**
  * Created by bogo on 31/07/15.
  */
-public class MainController {
+public class TerraMobileAppController {
 
-    private MainActivity mainActivity;
+    private TerraMobileApp terraMobileApp;
     private MenuMapController menuMapController;
     private GPSOverlayController gpsOverlayController;
     private TreeViewController treeViewController;
@@ -39,13 +39,13 @@ public class MainController {
 
     private Project currentProject;
 
-    public MainController(MainActivity mainActivity) throws InvalidAppConfigException {
-        this.mainActivity = mainActivity;
-        this.menuMapController = new MenuMapController(mainActivity, this);
-        this.gpsOverlayController = new GPSOverlayController(mainActivity);
-        this.markerInfoWindowController = new MarkerInfoWindowController(mainActivity);
-        this.featureInfoPanelController = new FeatureInfoPanelController(mainActivity);
-        treeViewController = new TreeViewController(this.mainActivity, this);
+    public TerraMobileAppController(TerraMobileApp terraMobileApp) throws InvalidAppConfigException {
+        this.terraMobileApp = terraMobileApp;
+        this.menuMapController = new MenuMapController(terraMobileApp, this);
+        this.gpsOverlayController = new GPSOverlayController(terraMobileApp);
+        this.markerInfoWindowController = new MarkerInfoWindowController(terraMobileApp);
+        this.featureInfoPanelController = new FeatureInfoPanelController(terraMobileApp);
+        treeViewController = new TreeViewController(this.terraMobileApp, this);
     }
 
     public String getServerURL()
@@ -72,7 +72,7 @@ public class MainController {
     {
         try {
 
-            Setting setting = SettingsService.get(mainActivity, key, ApplicationDatabase.DATABASE_NAME);
+            Setting setting = SettingsService.get(terraMobileApp, key, ApplicationDatabase.DATABASE_NAME);
             new IgnoreSpecFactory();
             if(setting!=null)
             {
@@ -81,10 +81,10 @@ public class MainController {
 
         } catch (InvalidAppConfigException e) {
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
         } catch (SettingsException e) {
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
         }
         return null;
     }
@@ -98,7 +98,7 @@ public class MainController {
     }
 
     public MapFragment getMapFragment() {
-        FragmentManager fm = this.mainActivity.getSupportFragmentManager();
+        FragmentManager fm = this.terraMobileApp.getSupportFragmentManager();
         MapFragment fragment = (MapFragment)fm.findFragmentById(R.id.content_frame);
         return fragment;
     }
@@ -123,7 +123,7 @@ public class MainController {
             return true;
         }
 
-        DatabaseFactory.getDatabase(mainActivity, project.getFilePath());
+        DatabaseFactory.getDatabase(terraMobileApp, project.getFilePath());
 
         
 
@@ -138,18 +138,18 @@ public class MainController {
 
         getTreeViewController().refreshTreeView();
 
-        mainActivity.invalidateOptionsMenu();
+        terraMobileApp.invalidateOptionsMenu();
 
         try {
             Setting currentProjectSet = new Setting("current_project", project.getName());
 
-            SettingsService.update(mainActivity, currentProjectSet, ApplicationDatabase.DATABASE_NAME);
+            SettingsService.update(terraMobileApp, currentProjectSet, ApplicationDatabase.DATABASE_NAME);
 
             getMenuMapController().removeAllLayers(true);
 
-            SettingsService.initProjectSettings(mainActivity, project);
+            SettingsService.initProjectSettings(terraMobileApp, project);
 
-            BoundingBox bb = ProjectsService.getProjectDefaultBoundingBox(mainActivity, project.getFilePath());
+            BoundingBox bb = ProjectsService.getProjectDefaultBoundingBox(terraMobileApp, project.getFilePath());
 
             if(bb==null)
             {
@@ -170,19 +170,19 @@ public class MainController {
         } catch (SettingsException e)
         {
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
             clearCurrentProject();
             return false;
         } catch (ProjectException e)
         {
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
             clearCurrentProject();
             return false;
         } catch (Exception e)
         {
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.error, R.string.invalid_project);
+            Message.showErrorMessage(terraMobileApp, R.string.error, R.string.invalid_project);
             clearCurrentProject();
             return false;
         }
@@ -196,53 +196,53 @@ public class MainController {
 
             Setting currentProjectSet = new Setting("current_project", null);
 
-            SettingsService.update(mainActivity, currentProjectSet, ApplicationDatabase.DATABASE_NAME);
+            SettingsService.update(terraMobileApp, currentProjectSet, ApplicationDatabase.DATABASE_NAME);
 
             getTreeViewController().refreshTreeView();
 
-            mainActivity.invalidateOptionsMenu();
+            terraMobileApp.invalidateOptionsMenu();
 
         } catch (SettingsException e) {
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
         } catch (InvalidAppConfigException e) {
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
         }
     }
     public void initMain()
     {
         try {
 
-            SettingsService.initApplicationSettings(mainActivity);
+            SettingsService.initApplicationSettings(terraMobileApp);
 
         } catch (InvalidAppConfigException e) {
 
-            Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
 
         } catch (SettingsException e) {
 
-            Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
         }
 
         try{
             getTreeViewController().initTreeView();
         } catch (InvalidAppConfigException e) {
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
         }
     }
 
 
     public void loadCurrentProject() throws InvalidAppConfigException, DAOException {
 
-        File directory = Util.getDirectory(mainActivity.getResources().getString(R.string.app_workspace_dir));
+        File directory = Util.getDirectory(terraMobileApp.getResources().getString(R.string.app_workspace_dir));
 
         String currentProjectPath = getCurrentProjectPath();
 
-        String ext = mainActivity.getString(R.string.geopackage_extension);
+        String ext = terraMobileApp.getString(R.string.geopackage_extension);
         if(currentProjectPath != null) {
-            ProjectDAO projectDAO = new ProjectDAO(DatabaseFactory.getDatabase(mainActivity, ApplicationDatabase.DATABASE_NAME));
+            ProjectDAO projectDAO = new ProjectDAO(DatabaseFactory.getDatabase(terraMobileApp, ApplicationDatabase.DATABASE_NAME));
             File currentProjectFile = Util.getGeoPackageByName(directory, ext, currentProjectPath);
             Project currentProject = projectDAO.getByName(currentProjectPath);
             if(currentProjectFile != null) {
@@ -303,15 +303,15 @@ public class MainController {
 
         try {
 
-            menuMapController.getMainController().loadCurrentProject();
+            menuMapController.getTerraMobileAppController().loadCurrentProject();
 
         } catch (InvalidAppConfigException e) {
 
-            Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
 
         } catch (DAOException e) {
 
-            Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
         }
 
     }

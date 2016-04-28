@@ -27,7 +27,7 @@ public class MediaService {
 
     /**
      *
-     * @param context, The mainActivity
+     * @param context, The terraMobileApp
      * @param geoPackage, The GeoPackage reference
      * @param mediaTable, The media table name
      * @param featureID, The identify of the feature
@@ -88,7 +88,7 @@ public class MediaService {
                 Map<String, Integer> mediaDimensions = new HashMap<String, Integer>(4);
 
                 /*
-                DisplayMetrics displayMetrics = Util.getDisplayDimension((MainActivity) context);
+                DisplayMetrics displayMetrics = Util.getDisplayDimension((TerraMobileApp) context);
                 mediaDimensions.put("displayWidth", displayMetrics.widthPixels);
                 mediaDimensions.put("displayHeight", displayMetrics.heightPixels);
                 */

@@ -17,10 +17,10 @@ import br.org.funcate.terramobile.model.service.FeatureService;
  */
 public class FeatureInfoPanelController {
 
-    private MainActivity mainActivity;
+    private TerraMobileApp terraMobileApp;
 
-    public FeatureInfoPanelController(MainActivity activity) {
-        this.mainActivity = activity;
+    public FeatureInfoPanelController(TerraMobileApp activity) {
+        this.terraMobileApp = activity;
     }
 
     public void startFeatureInfoPanel(GpkgLayer layer, long featureID) {
@@ -38,9 +38,9 @@ public class FeatureInfoPanelController {
 
         String jsonForm = layer.getJSON();
         Bundle featureDataValues = FeatureService.featureAttrsToBundle(feature, jsonForm);
-        Intent intent = new Intent(mainActivity.getApplicationContext(), FeatureInfoPanelActivity.class);
+        Intent intent = new Intent(terraMobileApp.getApplicationContext(), FeatureInfoPanelActivity.class);
         intent.putExtra(FeatureService.FEATURE_DATA_CONTENT, featureDataValues);
-        mainActivity.startActivity(intent);
+        terraMobileApp.startActivity(intent);
     }
 
 }

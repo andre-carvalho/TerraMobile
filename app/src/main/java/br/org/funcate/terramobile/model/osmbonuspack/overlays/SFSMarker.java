@@ -9,7 +9,7 @@ import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.views.MapView;
 
 import br.org.funcate.terramobile.R;
-import br.org.funcate.terramobile.controller.activity.MainActivity;
+import br.org.funcate.terramobile.controller.activity.TerraMobileApp;
 import br.org.funcate.terramobile.model.exception.InvalidAppConfigException;
 import br.org.funcate.terramobile.model.geomsource.SFSPoint;
 import br.org.funcate.terramobile.util.Message;
@@ -55,7 +55,7 @@ public class SFSMarker extends Marker implements Marker.OnMarkerClickListener {
                 titleMarker = ResourceHelper.getStringResource(R.string.title_marker);
 
             } catch (InvalidAppConfigException e) {
-                Message.showErrorMessage(((MainActivity) mMapView.getContext()), R.string.failure_title_msg, e.getMessage());
+                Message.showErrorMessage(((TerraMobileApp) mMapView.getContext()), R.string.failure_title_msg, e.getMessage());
             }
             titleMarker += ": " + mMarker.getPosition().toDoubleString();
             txtTitle.setText(titleMarker);

@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.IOException;
 
 import br.org.funcate.terramobile.R;
-import br.org.funcate.terramobile.controller.activity.MainActivity;
+import br.org.funcate.terramobile.controller.activity.TerraMobileApp;
 import br.org.funcate.terramobile.controller.activity.tasks.httpclient.FileBodyUploadProgress;
 import br.org.funcate.terramobile.model.exception.InvalidAppConfigException;
 import br.org.funcate.terramobile.model.exception.SettingsException;
@@ -38,21 +38,21 @@ public class UploadTask extends AsyncTask<String, String, Boolean> {
 
     private static final String LINE_FEED = "\r\n";
 
-    private MainActivity mainActivity;
+    private TerraMobileApp terraMobileApp;
 
     private File originFile;
 
-    public UploadTask(String uploadOriginFilePath, MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
+    public UploadTask(String uploadOriginFilePath, TerraMobileApp terraMobileApp) {
+        this.terraMobileApp = terraMobileApp;
         this.uploadOriginFilePath = uploadOriginFilePath;
     }
 
     @Override
     protected void onPreExecute() {
-        mainActivity.showUploadProgressDialog(mainActivity.getString(R.string.send_project_upload));
+        terraMobileApp.showUploadProgressDialog(terraMobileApp.getString(R.string.send_project_upload));
         // set a listener to update the current project item.
-        if(mainActivity.getProjectListFragment()!=null) {
-            mainActivity.getProgressDialog().setOnDismissListener(mainActivity.getProjectListFragment());
+        if(terraMobileApp.getProjectListFragment()!=null) {
+            terraMobileApp.getProgressDialog().setOnDismissListener(terraMobileApp.getProjectListFragment());
         }
     }
 
@@ -68,7 +68,7 @@ public class UploadTask extends AsyncTask<String, String, Boolean> {
                 if(originJournalFile.exists()) {
                     Util.moveFile(originJournalFile.getAbsolutePath(), uploadedDir.getAbsolutePath());
                 }
-                ProjectsService.increaseUploadSequence(mainActivity, mainActivity.getMainController().getCurrentProject());
+                ProjectsService.increaseUploadSequence(terraMobileApp, terraMobileApp.getTerraMobileAppController().getCurrentProject());
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -80,7 +80,7 @@ public class UploadTask extends AsyncTask<String, String, Boolean> {
             e.printStackTrace();
             Log.e("onPostExecute Exception", e.getMessage());
         } finally {
-            mainActivity.getProgressDialog().dismiss();
+            terraMobileApp.getProgressDialog().dismiss();
         }
     }
 
@@ -157,20 +157,20 @@ public class UploadTask extends AsyncTask<String, String, Boolean> {
      */
     protected void onCancelled(Boolean aBoolean) {
         super.onCancelled(aBoolean);
-        mainActivity.getProgressDialog().dismiss();
-        Message.showSuccessMessage(mainActivity, R.string.success, R.string.download_cancelled);
+        terraMobileApp.getProgressDialog().dismiss();
+        Message.showSuccessMessage(terraMobileApp, R.string.success, R.string.download_cancelled);
     }
 
     public void updateProgress(int percent)
     {
-        publishProgress(Integer.toString(percent), mainActivity.getString(R.string.send_project_upload));
+        publishProgress(Integer.toString(percent), terraMobileApp.getString(R.string.send_project_upload));
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
-        if(mainActivity.getProgressDialog() != null && mainActivity.getProgressDialog().isShowing()) {
-            mainActivity.getProgressDialog().setProgress(Integer.parseInt(values[0]));
-            mainActivity.getProgressDialog().setMessage(values[1]);
+        if(terraMobileApp.getProgressDialog() != null && terraMobileApp.getProgressDialog().isShowing()) {
+            terraMobileApp.getProgressDialog().setProgress(Integer.parseInt(values[0]));
+            terraMobileApp.getProgressDialog().setMessage(values[1]);
         }
     }
 }

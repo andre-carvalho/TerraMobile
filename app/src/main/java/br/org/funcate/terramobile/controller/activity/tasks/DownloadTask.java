@@ -20,18 +20,14 @@ import org.apache.http.params.HttpParams;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import br.org.funcate.terramobile.R;
-import br.org.funcate.terramobile.controller.activity.MainActivity;
+import br.org.funcate.terramobile.controller.activity.TerraMobileApp;
 import br.org.funcate.terramobile.model.db.ApplicationDatabase;
 import br.org.funcate.terramobile.model.db.DatabaseFactory;
 import br.org.funcate.terramobile.model.db.dao.ProjectDAO;
@@ -49,7 +45,7 @@ public class DownloadTask extends AsyncTask<String, String, Boolean> {
     private String downloadDestinationFilePath;
     private ArrayList<String> mFiles;
 
-    private MainActivity mainActivity;
+    private TerraMobileApp terraMobileApp;
 
     private File destinationFile;
 
@@ -63,8 +59,8 @@ public class DownloadTask extends AsyncTask<String, String, Boolean> {
 
     private int errorMsg;
 
-    public DownloadTask(String downloadDestinationFilePath, String unzipDestinationFilePath, String projectFileName, String projectUUID, int projectStatus, MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
+    public DownloadTask(String downloadDestinationFilePath, String unzipDestinationFilePath, String projectFileName, String projectUUID, int projectStatus, TerraMobileApp terraMobileApp) {
+        this.terraMobileApp = terraMobileApp;
         this.unzipDestinationFilePath = unzipDestinationFilePath;
         this.downloadDestinationFilePath = downloadDestinationFilePath;
         this.projectFileName = projectFileName;
@@ -76,7 +72,7 @@ public class DownloadTask extends AsyncTask<String, String, Boolean> {
 
     @Override
     protected void onPreExecute() {
-        mainActivity.showDownloadProgressDialog(mainActivity.getString(R.string.downloading));
+        terraMobileApp.showDownloadProgressDialog(terraMobileApp.getString(R.string.downloading));
     }
 
     protected Boolean doInBackground(String... urlToDownload) {
@@ -174,13 +170,13 @@ public class DownloadTask extends AsyncTask<String, String, Boolean> {
                         return false;
                     }
                     total += bufferLength;
-                    publishProgress("" + (int) ((total * 100) / totalSize), mainActivity.getString(R.string.downloading));
+                    publishProgress("" + (int) ((total * 100) / totalSize), terraMobileApp.getString(R.string.downloading));
                     fileOutput.write(buffer, 0, bufferLength);
                 }
                 fileOutput.flush();
                 fileOutput.close();
 
-                String ext = mainActivity.getString(R.string.geopackage_extension);
+                String ext = terraMobileApp.getString(R.string.geopackage_extension);
 
                 if(downloadDestinationFilePath.endsWith(ext))
                     mFiles.add(downloadDestinationFilePath.substring(downloadDestinationFilePath.lastIndexOf(File.separatorChar)+1, downloadDestinationFilePath.length()));
@@ -196,7 +192,7 @@ public class DownloadTask extends AsyncTask<String, String, Boolean> {
                 unzipDestinationFilePath += "/" +projectFileName;
 
                 if(destinationFile.exists()) {
-                    publishProgress("99", mainActivity.getString(R.string.copying_file));
+                    publishProgress("99", terraMobileApp.getString(R.string.copying_file));
                     Util.copyFile(downloadDestinationFilePath, unzipDestinationFilePath);
                     destinationFile.delete();
                 }
@@ -236,13 +232,13 @@ public class DownloadTask extends AsyncTask<String, String, Boolean> {
         try {
             if(android.os.Debug.isDebuggerConnected()) android.os.Debug.waitForDebugger(); // Para debugar é preciso colocar um breakpoint nessa linha
 
-              //  mainActivity.getMainController().getTreeViewController().refreshTreeView();
+              //  terraMobileApp.getTerraMobileAppController().getTreeViewController().refreshTreeView();
 
             if(mFiles.size()!=0)
             {
                 String projectName = mFiles.get(0);// The project is the last not_downloaded geopackage file.
 
-                ProjectDAO projectDAO = new ProjectDAO(DatabaseFactory.getDatabase(mainActivity, ApplicationDatabase.DATABASE_NAME));
+                ProjectDAO projectDAO = new ProjectDAO(DatabaseFactory.getDatabase(terraMobileApp, ApplicationDatabase.DATABASE_NAME));
 
                 Project project = new Project();
                 project.setId(null);
@@ -251,37 +247,37 @@ public class DownloadTask extends AsyncTask<String, String, Boolean> {
                 project.setDownloaded(1);
                 projectDAO.insert(project);
 
-                mainActivity.getMainController().setCurrentProject(projectDAO.getByName(projectName));
+                terraMobileApp.getTerraMobileAppController().setCurrentProject(projectDAO.getByName(projectName));
             }
 
-            if(mainActivity.getProgressDialog() != null && mainActivity.getProgressDialog().isShowing()) {
+            if(terraMobileApp.getProgressDialog() != null && terraMobileApp.getProgressDialog().isShowing()) {
                 if (aBoolean) {
-                    mainActivity.getProgressDialog().dismiss();
-                    mainActivity.getProjectListFragment().dismiss();
-                    Message.showSuccessMessage(mainActivity, R.string.success, R.string.download_success);
+                    terraMobileApp.getProgressDialog().dismiss();
+                    terraMobileApp.getProjectListFragment().dismiss();
+                    Message.showSuccessMessage(terraMobileApp, R.string.success, R.string.download_success);
                 } else {
-                    mainActivity.getProgressDialog().dismiss();
-                    Message.showErrorMessage(mainActivity, R.string.error, errorMsg);
+                    terraMobileApp.getProgressDialog().dismiss();
+                    Message.showErrorMessage(terraMobileApp, R.string.error, errorMsg);
                 }
             }
             else {
-                Message.showErrorMessage(mainActivity, R.string.error, errorMsg);
+                Message.showErrorMessage(terraMobileApp, R.string.error, errorMsg);
             }
         } catch (InvalidAppConfigException e) {
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
         } catch (DAOException e) {
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
         }
 
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
-        if(mainActivity.getProgressDialog() != null && mainActivity.getProgressDialog().isShowing()) {
-            mainActivity.getProgressDialog().setProgress(Integer.parseInt(values[0]));
-            mainActivity.getProgressDialog().setMessage(values[1]);
+        if(terraMobileApp.getProgressDialog() != null && terraMobileApp.getProgressDialog().isShowing()) {
+            terraMobileApp.getProgressDialog().setProgress(Integer.parseInt(values[0]));
+            terraMobileApp.getProgressDialog().setMessage(values[1]);
         }
     }
 
@@ -293,12 +289,12 @@ public class DownloadTask extends AsyncTask<String, String, Boolean> {
         super.onCancelled(aBoolean);
         if(destinationFile.exists()) {
             if(destinationFile.delete())
-                if(mainActivity.getProgressDialog().isShowing())
-                    mainActivity.getProgressDialog().dismiss();
+                if(terraMobileApp.getProgressDialog().isShowing())
+                    terraMobileApp.getProgressDialog().dismiss();
                 if(error)
-                    Message.showErrorMessage(mainActivity, R.string.error, R.string.download_failed);
+                    Message.showErrorMessage(terraMobileApp, R.string.error, R.string.download_failed);
                 else
-                    Message.showSuccessMessage(mainActivity, R.string.success, R.string.download_cancelled);
+                    Message.showSuccessMessage(terraMobileApp, R.string.success, R.string.download_cancelled);
         }
     }
 }

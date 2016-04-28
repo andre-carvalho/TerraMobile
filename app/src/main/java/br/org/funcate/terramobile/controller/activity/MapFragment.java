@@ -84,10 +84,10 @@ public class MapFragment extends Fragment implements OpenStreetMapConstants {
 
         if(menuMapController==null)
         {
-            Message.showErrorMessage((MainActivity)context, R.string.failure_title_msg, "Missing MenuMapController on MapFragment map configuration.");
+            Message.showErrorMessage((TerraMobileApp)context, R.string.failure_title_msg, "Missing MenuMapController on MapFragment map configuration.");
         }
         // In some scenarios the app crash here.
-        mMapView.setMainController(menuMapController.getMainController());
+        mMapView.setTerraMobileAppController(menuMapController.getTerraMobileAppController());
         mMapView.setMapEventsOverlay();
         drawingImageView = (ImageView) v.findViewById(R.id.DrawingImageView);
         try {
@@ -95,7 +95,7 @@ public class MapFragment extends Fragment implements OpenStreetMapConstants {
 
         } catch (InvalidAppConfigException e) {
             e.printStackTrace();
-            Message.showErrorMessage((MainActivity)context, R.string.failure_title_msg, e.getMessage());
+            Message.showErrorMessage((TerraMobileApp)context, R.string.failure_title_msg, e.getMessage());
         }
 
         gpsLocation = (ImageButton) v.findViewById(R.id.Gps);
@@ -188,8 +188,8 @@ public class MapFragment extends Fragment implements OpenStreetMapConstants {
             Boolean showGPSLocationOnCenter = gpsSettingController.getGPSCenterState();
             if (showGPSLocation != null)
                 if (showGPSLocation) {
-                    MainActivity mainActivity = (MainActivity) context;
-                    GPSOverlayController gpsOverlayController = mainActivity.getMainController().getGpsOverlayController();
+                    TerraMobileApp terraMobileApp = (TerraMobileApp) context;
+                    GPSOverlayController gpsOverlayController = terraMobileApp.getTerraMobileAppController().getGpsOverlayController();
                     gpsOverlayController.addGPSTrackerLayer();
                     gpsOverlayController.setKeepOnCenter( ((showGPSLocationOnCenter != null)?(showGPSLocationOnCenter):(false)) );
                 }
@@ -248,13 +248,13 @@ public class MapFragment extends Fragment implements OpenStreetMapConstants {
             public void onProviderEnabled(String provider) {}
             public void onProviderDisabled(String provider) {
                 progressDialog.dismiss();
-                Message.showErrorMessage((MainActivity) mMapView.getContext(), R.string.fail, R.string.disabled_provider);
+                Message.showErrorMessage((TerraMobileApp) mMapView.getContext(), R.string.fail, R.string.disabled_provider);
             }
         };
 
         if(!GPSService.registerListener(mMapView.getContext(), locationListener)){
             progressDialog.dismiss();
-            Message.showErrorMessage((MainActivity)mMapView.getContext(),R.string.fail,R.string.disabled_provider);
+            Message.showErrorMessage((TerraMobileApp)mMapView.getContext(),R.string.fail,R.string.disabled_provider);
         }
     }
 
@@ -315,7 +315,7 @@ public class MapFragment extends Fragment implements OpenStreetMapConstants {
             getMapView().setMultiTouchControls(multiTouchControls);
 
         } catch (InvalidAppConfigException e) {
-            Message.showErrorMessage((MainActivity)context, R.string.error, e.getMessage());
+            Message.showErrorMessage((TerraMobileApp)context, R.string.error, e.getMessage());
         }
 
     }

@@ -38,7 +38,7 @@ import br.org.funcate.extended.model.TMConfigEditableLayer;
 import br.org.funcate.jgpkg.exception.QueryException;
 import br.org.funcate.jgpkg.service.GeoPackageService;
 import br.org.funcate.terramobile.R;
-import br.org.funcate.terramobile.controller.activity.MainActivity;
+import br.org.funcate.terramobile.controller.activity.TerraMobileApp;
 import br.org.funcate.terramobile.controller.activity.TreeViewController;
 import br.org.funcate.terramobile.model.db.dao.LayerFormDAO;
 import br.org.funcate.terramobile.model.exception.DAOException;
@@ -62,7 +62,7 @@ public class EditableLayerService {
      */
     public static void storeData(Context context, Bundle formData) throws TerraMobileException, QueryException, DAOException {
         ArrayList<String> keys = formData.getStringArrayList(LibraryConstants.FORM_KEYS);
-        TreeViewController tv = ((MainActivity)context).getMainController().getTreeViewController();
+        TreeViewController tv = ((TerraMobileApp)context).getTerraMobileAppController().getTreeViewController();
         if(keys==null || keys.isEmpty()){
             throw new TerraMobileException(context.getString(R.string.missing_form_data));
         }else {
@@ -75,8 +75,8 @@ public class EditableLayerService {
                 String mediaTable = tv.getSelectedEditableLayer().getMediaTable();
                 MediaService.upgradePictures(context, geoPackage, mediaTable, databaseImages, insertImages, featureID);
 
-                ((MainActivity) context).getMainController().getMenuMapController().removeLayer(tv.getSelectedEditableLayer());
-                ((MainActivity)context).getMainController().getMenuMapController().addLayer(tv.getSelectedEditableLayer());
+                ((TerraMobileApp) context).getTerraMobileAppController().getMenuMapController().removeLayer(tv.getSelectedEditableLayer());
+                ((TerraMobileApp)context).getTerraMobileAppController().getMenuMapController().addLayer(tv.getSelectedEditableLayer());
 
             }catch (Exception e) {
                 int flags = context.getApplicationInfo().flags;

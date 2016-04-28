@@ -7,7 +7,7 @@ package br.org.funcate.terramobile.util;
 public class GlobalParameters {
 
     /**
-     * Used to send and receive a broadcast message between MainActivity and SettingActivity
+     * Used to send and receive a broadcast message between TerraMobileApp and SettingActivity
      */
     public static final String ACTION_BROADCAST_MAIN_ACTIVITY = "SETTING_ACTION";
 

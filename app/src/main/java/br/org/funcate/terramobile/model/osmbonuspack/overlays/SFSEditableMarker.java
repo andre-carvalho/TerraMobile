@@ -20,7 +20,7 @@ import org.osmdroid.views.overlay.Overlay;
 import java.util.AbstractList;
 
 import br.org.funcate.terramobile.R;
-import br.org.funcate.terramobile.controller.activity.MainActivity;
+import br.org.funcate.terramobile.controller.activity.TerraMobileApp;
 import br.org.funcate.terramobile.controller.activity.MarkerInfoWindowController;
 import br.org.funcate.terramobile.controller.activity.TreeViewController;
 import br.org.funcate.terramobile.model.exception.InvalidAppConfigException;
@@ -37,15 +37,15 @@ import br.org.funcate.terramobile.util.ResourceHelper;
  */
 public class SFSEditableMarker extends Marker implements Marker.OnMarkerClickListener {
 
-    private MainActivity mMainActivity=null;
+    private TerraMobileApp mTerraMobileApp =null;
 
     public SFSEditableMarker(MapView mapView) {
         super(mapView);
-        this.mMainActivity = (MainActivity) mapView.getContext();
+        this.mTerraMobileApp = (TerraMobileApp) mapView.getContext();
         this.setOnMarkerClickListener(this);
         this.setInfoWindow(new TMMarkerInfoWindow(R.layout.editable_marker_info_window,
                 mapView,
-                this.mMainActivity.getMainController().getMarkerInfoWindowController()
+                this.mTerraMobileApp.getTerraMobileAppController().getMarkerInfoWindowController()
         ));
         this.setTitle("Centered on " + this.getPosition().getLatitude() + "," + this.getPosition().getLongitude());
     }
@@ -58,7 +58,7 @@ public class SFSEditableMarker extends Marker implements Marker.OnMarkerClickLis
     public Long getMarkerId() throws TerraMobileException, InvalidAppConfigException {
         String markerId = ((SFSPoint)this.getRelatedObject()).mId;
         if(markerId!=null) {
-            TreeViewController treeViewController = this.mMainActivity.getMainController().getTreeViewController();
+            TreeViewController treeViewController = this.mTerraMobileApp.getTerraMobileAppController().getTreeViewController();
             GpkgLayer editableLayer = treeViewController.getSelectedEditableLayer();
             if(editableLayer==null) {
                 throw new TerraMobileException( ResourceHelper.getStringResource(R.string.failure_on_identify_marker) );
@@ -134,7 +134,7 @@ public class SFSEditableMarker extends Marker implements Marker.OnMarkerClickLis
                         markerInfoWindowController.moveMarker(mMarker);
                     }catch (TerraMobileException tme){
                         tme.printStackTrace();
-                        Message.showErrorMessage((MainActivity) mMapView.getContext(), R.string.fail, tme.getMessage());
+                        Message.showErrorMessage((TerraMobileApp) mMapView.getContext(), R.string.fail, tme.getMessage());
                         mMarker.setPosition(oldPoint);
                         progressDialog.dismiss();
                     }
@@ -149,7 +149,7 @@ public class SFSEditableMarker extends Marker implements Marker.OnMarkerClickLis
             };
 
             if(!GPSService.registerListener(mMapView.getContext(), locationListener)) {
-                Message.showErrorMessage((MainActivity)mMapView.getContext(),R.string.fail,R.string.disabled_provider);
+                Message.showErrorMessage((TerraMobileApp)mMapView.getContext(),R.string.fail,R.string.disabled_provider);
                 if(progressDialog.isShowing())
                     progressDialog.dismiss();
             }
@@ -164,7 +164,7 @@ public class SFSEditableMarker extends Marker implements Marker.OnMarkerClickLis
                 markerInfoWindowController.moveMarker(mMarker);
             }catch (TerraMobileException tme){
                 tme.printStackTrace();
-                Message.showErrorMessage((MainActivity) mMapView.getContext(), R.string.fail, tme.getMessage());
+                Message.showErrorMessage((TerraMobileApp) mMapView.getContext(), R.string.fail, tme.getMessage());
                 mMarker.setPosition(oldPoint);
             }
             mMarker.closeInfoWindow();
@@ -200,7 +200,7 @@ public class SFSEditableMarker extends Marker implements Marker.OnMarkerClickLis
                 titleMarker = ResourceHelper.getStringResource(R.string.title_marker);
 
             } catch (InvalidAppConfigException e) {
-                Message.showErrorMessage(((MainActivity) mMapView.getContext()), R.string.failure_title_msg, e.getMessage());
+                Message.showErrorMessage(((TerraMobileApp) mMapView.getContext()), R.string.failure_title_msg, e.getMessage());
             }
             titleMarker += ": " + mMarker.getPosition().toDoubleString();
             txtTitle.setText(titleMarker);
@@ -213,10 +213,10 @@ public class SFSEditableMarker extends Marker implements Marker.OnMarkerClickLis
                         featureID = mMarker.getMarkerId();
                     } catch (TerraMobileException e) {
                         e.printStackTrace();
-                        Message.showErrorMessage((MainActivity) mMapView.getContext(), R.string.fail, e.getMessage());
+                        Message.showErrorMessage((TerraMobileApp) mMapView.getContext(), R.string.fail, e.getMessage());
                     }catch (InvalidAppConfigException e){
                         e.printStackTrace();
-                        Message.showErrorMessage((MainActivity) mMapView.getContext(), R.string.fail, e.getMessage());
+                        Message.showErrorMessage((TerraMobileApp) mMapView.getContext(), R.string.fail, e.getMessage());
                     }
                     markerInfoWindowController.viewFeatureData(featureID);
                 }
@@ -240,7 +240,7 @@ public class SFSEditableMarker extends Marker implements Marker.OnMarkerClickLis
                 public void onClick(View v) {
 
                     that.setWhoCall(REMOVE_MAKER);
-                    Message.showConfirmMessage((MainActivity) mMapView.getContext(), R.string.title_remove_marker, R.string.message_remove_marker, that);
+                    Message.showConfirmMessage((TerraMobileApp) mMapView.getContext(), R.string.title_remove_marker, R.string.message_remove_marker, that);
                 }
             });
             ImageButton btnGPS = (ImageButton) mView.findViewById(R.id.btn_move_to_gps);
@@ -248,7 +248,7 @@ public class SFSEditableMarker extends Marker implements Marker.OnMarkerClickLis
                 public void onClick(View v) {
 
                     that.setWhoCall(MOVE_TO_GPS);
-                    Message.showConfirmMessage((MainActivity) mMapView.getContext(), R.string.title_move_marker, R.string.message_move_marker_gps, that);
+                    Message.showConfirmMessage((TerraMobileApp) mMapView.getContext(), R.string.title_move_marker, R.string.message_move_marker_gps, that);
 
                 }
             });
@@ -256,7 +256,7 @@ public class SFSEditableMarker extends Marker implements Marker.OnMarkerClickLis
             btnMapCenter.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     that.setWhoCall(MOVE_TO_CENTER);
-                    Message.showConfirmMessage((MainActivity) mMapView.getContext(), R.string.title_move_marker, R.string.message_move_marker_center, that);
+                    Message.showConfirmMessage((TerraMobileApp) mMapView.getContext(), R.string.title_move_marker, R.string.message_move_marker_center, that);
                 }
             });
             ImageButton btnCloseInfo = (ImageButton) mView.findViewById(R.id.btn_close_info_window);
@@ -269,7 +269,7 @@ public class SFSEditableMarker extends Marker implements Marker.OnMarkerClickLis
 
         private void showErrorMessage(int msgId) {
             Message.showErrorMessage(
-                    (MainActivity)mMapView.getContext(),
+                    (TerraMobileApp)mMapView.getContext(),
                     R.string.title_fail_message_marker,
                     msgId
             );

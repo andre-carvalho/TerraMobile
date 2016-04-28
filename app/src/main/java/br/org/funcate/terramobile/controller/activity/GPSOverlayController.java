@@ -56,13 +56,13 @@ public class GPSOverlayController {
      * @return, true is active or false otherwise
      */
     public boolean isOverlayAdded() {
-        mapView = (MapView) ((MainActivity) context).findViewById(R.id.mapview);
+        mapView = (MapView) ((TerraMobileApp) context).findViewById(R.id.mapview);
         if(mapView==null || gpsLayer==null) return false;
         return (mapView.getOverlays().contains(gpsLayer) && locationListener!=null);
     }
 
     public void addGPSTrackerLayer() {
-        mapView = (MapView) ((MainActivity) context).findViewById(R.id.mapview);
+        mapView = (MapView) ((TerraMobileApp) context).findViewById(R.id.mapview);
         if(mapView==null) return;
         if(!mapView.getOverlays().contains(gpsLayer)) {
             mapView.getOverlays().add(gpsLayer);
@@ -71,7 +71,7 @@ public class GPSOverlayController {
     }
 
     public void removeGPSTrackerLayer() {
-        mapView = (MapView) ((MainActivity) context).findViewById(R.id.mapview);
+        mapView = (MapView) ((TerraMobileApp) context).findViewById(R.id.mapview);
         if(mapView==null) return;
         if(mapView.getOverlays().contains(gpsLayer)) {
             mapView.getOverlays().remove(gpsLayer);
@@ -83,7 +83,7 @@ public class GPSOverlayController {
      * Enable the Layer GPS Overlay and register a listener of the location events.
      */
     public void enableGPSTrackerLayer() {
-        mapView = (MapView) ((MainActivity) context).findViewById(R.id.mapview);
+        mapView = (MapView) ((TerraMobileApp) context).findViewById(R.id.mapview);
         if(mapView==null) return;
         if(!gpsLayer.isEnabled()) gpsLayer.setEnabled(true);
         registerOnService();
@@ -99,7 +99,7 @@ public class GPSOverlayController {
      * Disable the Layer GPS Overlay and unregister location events.
      */
     public void disableGPSTrackerLayer() {
-        mapView = (MapView) ((MainActivity) context).findViewById(R.id.mapview);
+        mapView = (MapView) ((TerraMobileApp) context).findViewById(R.id.mapview);
         if(mapView==null) return;
         if(gpsLayer.isEnabled()) gpsLayer.setEnabled(false);
         unregisterOnService();
@@ -108,7 +108,7 @@ public class GPSOverlayController {
 
     private void registerOnService() {
 
-        mapView = (MapView) ((MainActivity) context).findViewById(R.id.mapview);
+        mapView = (MapView) ((TerraMobileApp) context).findViewById(R.id.mapview);
         if(mapView==null) return;
         if(locationListener!=null) {
             unregisterOnService();
@@ -132,17 +132,17 @@ public class GPSOverlayController {
             public void onStatusChanged(String provider, int status, Bundle extras) {}
             public void onProviderEnabled(String provider) {}
             public void onProviderDisabled(String provider) {
-                Message.showErrorMessage((MainActivity) mapView.getContext(), R.string.fail, R.string.disabled_provider);
+                Message.showErrorMessage((TerraMobileApp) mapView.getContext(), R.string.fail, R.string.disabled_provider);
             }
         };
 
         if(!GPSService.registerListener(mapView.getContext(), locationListener, updateTime)) {
-            Message.showErrorMessage((MainActivity)mapView.getContext(),R.string.fail,R.string.disabled_provider);
+            Message.showErrorMessage((TerraMobileApp)mapView.getContext(),R.string.fail,R.string.disabled_provider);
         }
     }
 
     private void unregisterOnService() {
-        mapView = (MapView) ((MainActivity) context).findViewById(R.id.mapview);
+        mapView = (MapView) ((TerraMobileApp) context).findViewById(R.id.mapview);
         if(mapView==null) return;
         GPSService.unregisterListener(mapView.getContext(), locationListener);
     }

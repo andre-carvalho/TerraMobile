@@ -56,14 +56,14 @@ public class MarkerInfoWindowController {
 
     private ArrayList<File> temporaryThumbnailImages;
     private ArrayList<File> temporaryDisplayImages;
-    private MainActivity mainActivity;
+    private TerraMobileApp terraMobileApp;
     private ProgressBar pgrInfoWindow;
     private ImageButton btnEditMarker;
     // identify the return of the request of the Activity Form
     private static int FORM_RESULT_CODE = 222;
 
-    public MarkerInfoWindowController(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
+    public MarkerInfoWindowController(TerraMobileApp terraMobileApp) {
+        this.terraMobileApp = terraMobileApp;
     }
 
     public void setProgressBar(ProgressBar progressBar) {
@@ -88,18 +88,18 @@ public class MarkerInfoWindowController {
             markerId = ((SFSEditableMarker) marker).getMarkerId().longValue();
         }catch (TerraMobileException e){
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.fail, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.fail, e.getMessage());
             return;
         }catch (InvalidAppConfigException e){
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.fail, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.fail, e.getMessage());
             return;
         }
         startActivityForm(markerId);
     }
 
     public void deleteMarker(Marker marker) throws TerraMobileException {
-        GpkgLayer layer=this.mainActivity.getMainController().getTreeViewController().getSelectedEditableLayer();
+        GpkgLayer layer=this.terraMobileApp.getTerraMobileAppController().getTreeViewController().getSelectedEditableLayer();
         boolean exec=false;
 
         try {
@@ -110,13 +110,13 @@ public class MarkerInfoWindowController {
                 feature = AppGeoPackageService.getFeature(layer, featureID);
             } catch (InvalidAppConfigException e) {
                 e.printStackTrace();
-                Message.showErrorMessage(mainActivity, R.string.fail, e.getMessage());
+                Message.showErrorMessage(terraMobileApp, R.string.fail, e.getMessage());
             } catch (LowMemoryException e) {
                 e.printStackTrace();
-                Message.showErrorMessage(mainActivity, R.string.fail, e.getMessage());
+                Message.showErrorMessage(terraMobileApp, R.string.fail, e.getMessage());
             } catch (TerraMobileException e) {
                 e.printStackTrace();
-                Message.showErrorMessage(mainActivity, R.string.fail, e.getMessage());
+                Message.showErrorMessage(terraMobileApp, R.string.fail, e.getMessage());
             }
 
             String statusKey;
@@ -143,30 +143,30 @@ public class MarkerInfoWindowController {
                 throw new TerraMobileException(ResourceHelper.getStringResource(R.string.feature_not_found));
             }else{
                 layer.setModified(true);
-                LayersService.updateModified(this.mainActivity, this.mainActivity.getMainController().getCurrentProject(), layer);
-                this.mainActivity.getMainController().getMapFragment().updateMap();
+                LayersService.updateModified(this.terraMobileApp, this.terraMobileApp.getTerraMobileAppController().getCurrentProject(), layer);
+                this.terraMobileApp.getTerraMobileAppController().getMapFragment().updateMap();
             }
         } catch (InvalidAppConfigException e) {
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.fail, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.fail, e.getMessage());
         } catch (LowMemoryException e) {
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.fail, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.fail, e.getMessage());
         } catch (SettingsException e) {
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.fail, e.getMessage());
+            Message.showErrorMessage(terraMobileApp, R.string.fail, e.getMessage());
         }
 
     }
 
     public void moveMarker(Marker marker) throws TerraMobileException {
-        GpkgLayer layer=this.mainActivity.getMainController().getTreeViewController().getSelectedEditableLayer();
+        GpkgLayer layer=this.terraMobileApp.getTerraMobileAppController().getTreeViewController().getSelectedEditableLayer();
         try {
             if(!AppGeoPackageService.updateFeature(layer, marker)) {
                 throw new TerraMobileException(ResourceHelper.getStringResource(R.string.failure_on_save_new_location));
             }else{
                 layer.setModified(true);
-                LayersService.updateModified(this.mainActivity, this.mainActivity.getMainController().getCurrentProject(), layer);
+                LayersService.updateModified(this.terraMobileApp, this.terraMobileApp.getTerraMobileAppController().getCurrentProject(), layer);
             }
         } catch (InvalidAppConfigException e) {
             e.printStackTrace();
@@ -193,15 +193,15 @@ public class MarkerInfoWindowController {
         String geometryType = "";
 
         try{
-            TreeViewController tv = mainActivity.getMainController().getTreeViewController();
+            TreeViewController tv = terraMobileApp.getTerraMobileAppController().getTreeViewController();
             editableLayer = tv.getSelectedEditableLayer();
             if(editableLayer==null) {
-                Message.showErrorMessage(mainActivity, R.string.failure_title_msg, R.string.missing_editable_layer);
+                Message.showErrorMessage(terraMobileApp, R.string.failure_title_msg, R.string.missing_editable_layer);
                 return;
             }
         }catch (Exception e){
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.failure_title_msg, R.string.error_start_form);
+            Message.showErrorMessage(terraMobileApp, R.string.failure_title_msg, R.string.error_start_form);
             return;
         }
 
@@ -215,24 +215,24 @@ public class MarkerInfoWindowController {
                 feature = AppGeoPackageService.getFeature(editableLayer, pointID);
             } catch (InvalidAppConfigException e) {
                 e.printStackTrace();
-                Message.showErrorMessage(mainActivity, R.string.failure_title_msg, e.getMessage());
+                Message.showErrorMessage(terraMobileApp, R.string.failure_title_msg, e.getMessage());
                 return;
             } catch (LowMemoryException e) {
                 e.printStackTrace();
-                Message.showErrorMessage(mainActivity, R.string.failure_title_msg, e.getMessage());
+                Message.showErrorMessage(terraMobileApp, R.string.failure_title_msg, e.getMessage());
                 return;
             } catch (TerraMobileException e) {
                 e.printStackTrace();
-                Message.showErrorMessage(mainActivity, R.string.failure_title_msg, e.getMessage());
+                Message.showErrorMessage(terraMobileApp, R.string.failure_title_msg, e.getMessage());
                 return;
             }catch (Exception e) {
                 e.printStackTrace();
-                Message.showErrorMessage(mainActivity, R.string.failure_title_msg, R.string.error_start_form);
+                Message.showErrorMessage(terraMobileApp, R.string.failure_title_msg, R.string.error_start_form);
                 return;
             }
 
             try {
-                images = EditableLayerService.getPhotosFromDatabase(mainActivity, editableLayer, pointID);
+                images = EditableLayerService.getPhotosFromDatabase(terraMobileApp, editableLayer, pointID);
             } catch (TerraMobileException e) {
                 e.printStackTrace();
                 images = null;
@@ -277,7 +277,7 @@ public class MarkerInfoWindowController {
         }
 
         try {
-            Intent formIntent = new Intent(mainActivity, FragmentDetailActivity.class);
+            Intent formIntent = new Intent(terraMobileApp, FragmentDetailActivity.class);
             formIntent.putExtra(LibraryConstants.SELECTED_POINT_ID, pointID);
             // The form name attribute, provided by JSON, shall be the same name of the editable layer.
             formIntent.putExtra(FormUtilities.ATTR_FORMNAME, editableLayer.getName());
@@ -306,14 +306,14 @@ public class MarkerInfoWindowController {
             if(formDataValues!=null) {
                 formIntent.putExtra(FormUtilities.ATTR_DATA_VALUES, formDataValues);
             }
-            File directory = Util.getDirectory(mainActivity.getResources().getString(R.string.app_workspace_temp_dir));
+            File directory = Util.getDirectory(terraMobileApp.getResources().getString(R.string.app_workspace_temp_dir));
 
             formIntent.putExtra(FormUtilities.MAIN_APP_WORKING_DIRECTORY, directory.getAbsolutePath());
-            mainActivity.startActivityForResult(formIntent, FORM_RESULT_CODE);
+            terraMobileApp.startActivityForResult(formIntent, FORM_RESULT_CODE);
 
         } catch (Exception e) {
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.failure_title_msg, R.string.error_start_form);
+            Message.showErrorMessage(terraMobileApp, R.string.failure_title_msg, R.string.error_start_form);
         }
     }
 
@@ -363,55 +363,55 @@ public class MarkerInfoWindowController {
         if (resultCode == Activity.RESULT_OK && requestCode == FORM_RESULT_CODE) {
             Bundle extras = data.getBundleExtra(LibraryConstants.PREFS_KEY_FORM);
             try {
-                EditableLayerService.storeData(mainActivity, extras);
+                EditableLayerService.storeData(terraMobileApp, extras);
 
-                TreeViewController tv = mainActivity.getMainController().getTreeViewController();
+                TreeViewController tv = terraMobileApp.getTerraMobileAppController().getTreeViewController();
                 GpkgLayer editableLayer = tv.getSelectedEditableLayer();
                 editableLayer.setModified(true);
-                LayersService.updateModified(this.mainActivity, this.mainActivity.getMainController().getCurrentProject(), editableLayer);
+                LayersService.updateModified(this.terraMobileApp, this.terraMobileApp.getTerraMobileAppController().getCurrentProject(), editableLayer);
 
             }catch (TerraMobileException tme) {
                 tme.printStackTrace();
-                Message.showErrorMessage(mainActivity, R.string.error, R.string.missing_form_data);
+                Message.showErrorMessage(terraMobileApp, R.string.error, R.string.missing_form_data);
             }catch (QueryException qe) {
                 qe.printStackTrace();
-                Message.showErrorMessage(mainActivity, R.string.error, R.string.error_while_storing_form_data);
+                Message.showErrorMessage(terraMobileApp, R.string.error, R.string.error_while_storing_form_data);
             }catch (DAOException de) {
                 de.printStackTrace();
-                Message.showErrorMessage(mainActivity, R.string.error, R.string.error_while_storing_form_data);
+                Message.showErrorMessage(terraMobileApp, R.string.error, R.string.error_while_storing_form_data);
             } catch (SettingsException e) {
                 e.printStackTrace();
-                Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+                Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
             } catch (InvalidAppConfigException e) {
                 e.printStackTrace();
-                Message.showErrorMessage(mainActivity, R.string.error, e.getMessage());
+                Message.showErrorMessage(terraMobileApp, R.string.error, e.getMessage());
             }
 
-            this.mainActivity.getMainController().getMapFragment().updateMap();
+            this.terraMobileApp.getTerraMobileAppController().getMapFragment().updateMap();
         }
     }
 
     public MapView getMapView() {
-        MapView mapView = (MapView) this.mainActivity.findViewById(R.id.mapview);
+        MapView mapView = (MapView) this.terraMobileApp.findViewById(R.id.mapview);
         return mapView;
     }
 
     public void viewFeatureData(long featureID) {
         GpkgLayer editableLayer;
         try{
-            TreeViewController tv = mainActivity.getMainController().getTreeViewController();
+            TreeViewController tv = terraMobileApp.getTerraMobileAppController().getTreeViewController();
             editableLayer = tv.getSelectedEditableLayer();
             if(editableLayer==null) {
-                Message.showErrorMessage(mainActivity, R.string.failure_title_msg, R.string.missing_editable_layer);
+                Message.showErrorMessage(terraMobileApp, R.string.failure_title_msg, R.string.missing_editable_layer);
                 return;
             }
         }catch (Exception e){
             e.printStackTrace();
-            Message.showErrorMessage(mainActivity, R.string.failure_title_msg, R.string.error_start_form);
+            Message.showErrorMessage(terraMobileApp, R.string.failure_title_msg, R.string.error_start_form);
             return;
         }
 
-        FeatureInfoPanelController controller = mainActivity.getMainController().getFeatureInfoPanelController();
+        FeatureInfoPanelController controller = terraMobileApp.getTerraMobileAppController().getFeatureInfoPanelController();
         controller.startFeatureInfoPanel(editableLayer, featureID);
     }
 

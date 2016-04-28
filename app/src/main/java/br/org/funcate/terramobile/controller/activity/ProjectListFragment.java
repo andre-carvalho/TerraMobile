@@ -52,11 +52,11 @@ public class ProjectListFragment extends DialogFragment{
         super.onStart();
         String terramobileUrl = null;
 
-        terramobileUrl = ((MainActivity)getActivity()).getMainController().getServerURL();
+        terramobileUrl = ((TerraMobileApp)getActivity()).getTerraMobileAppController().getServerURL();
 
         if(terramobileUrl != null)
         {
-            new ProjectListTask((MainActivity)getActivity()).execute(terramobileUrl + "listprojects");
+            new ProjectListTask((TerraMobileApp)getActivity()).execute(terramobileUrl + "listprojects");
         }
 
 

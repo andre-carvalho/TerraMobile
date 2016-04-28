@@ -14,7 +14,7 @@ import br.org.funcate.terramobile.model.tilesource.TerraMobileInvalidationHandle
  */
 public class TerraMobileMapView extends MapView {
 
-    private MainController mainController;
+    private TerraMobileAppController terraMobileAppController;
     private boolean initialized=false;
     private MapEventsOverlay mapEventsOverlay;
     public TerraMobileMapView(Context context, AttributeSet attrs) {
@@ -26,10 +26,10 @@ public class TerraMobileMapView extends MapView {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
 
-        if(mainController!=null
+        if(terraMobileAppController !=null
                 &&!initialized)
         {
-            mainController.onMapViewInitialized();
+            terraMobileAppController.onMapViewInitialized();
             initialized = true;
         }
         ((TerraMobileInvalidationHandler)getTileRequestCompleteHandler()).setMapView(this);
@@ -42,11 +42,11 @@ public class TerraMobileMapView extends MapView {
     }
 
     public void setMapEventsOverlay() {
-        mapEventsOverlay = new MapEventsOverlay(mainController.getMapFragment().getActivity(), (MainActivity)mainController.getMapFragment().getActivity());
+        mapEventsOverlay = new MapEventsOverlay(terraMobileAppController.getMapFragment().getActivity(), (TerraMobileApp) terraMobileAppController.getMapFragment().getActivity());
     }
 
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
+    public void setTerraMobileAppController(TerraMobileAppController terraMobileAppController) {
+        this.terraMobileAppController = terraMobileAppController;
     }
 
     @Override

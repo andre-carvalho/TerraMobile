@@ -17,7 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import br.org.funcate.terramobile.R;
-import br.org.funcate.terramobile.controller.activity.MainActivity;
+import br.org.funcate.terramobile.controller.activity.TerraMobileApp;
 import br.org.funcate.terramobile.controller.activity.UploadProjectFragment;
 import br.org.funcate.terramobile.controller.activity.tasks.DownloadTask;
 import br.org.funcate.terramobile.model.db.ApplicationDatabase;
@@ -49,7 +49,7 @@ public class ProjectListAdapter extends ArrayAdapter<Project> implements Adapter
 
     public void resetIcon() {
 
-        Project currentProject = ((MainActivity) context).getMainController().getCurrentProject();
+        Project currentProject = ((TerraMobileApp) context).getTerraMobileAppController().getCurrentProject();
         for (Object o : projectList) {
             Project p = (Project)o;
             if (currentProject != null && currentProject.toString().equals(p.toString())) {
@@ -82,7 +82,7 @@ public class ProjectListAdapter extends ArrayAdapter<Project> implements Adapter
        // iVMoveToSD.setTag(project);
 
 
-        Project currentProject = ((MainActivity) context).getMainController().getCurrentProject();
+        Project currentProject = ((TerraMobileApp) context).getTerraMobileAppController().getCurrentProject();
         if (currentProject != null && currentProject.toString().equals(project.toString()))
             rBCurrentProject.setChecked(true);
 
@@ -153,10 +153,10 @@ public class ProjectListAdapter extends ArrayAdapter<Project> implements Adapter
 
         } catch (InvalidAppConfigException e) {
             e.printStackTrace();
-            Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+            Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
         } catch (ProjectException e) {
             e.printStackTrace();
-            Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+            Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
         }
 
 
@@ -204,7 +204,7 @@ public class ProjectListAdapter extends ArrayAdapter<Project> implements Adapter
                 final String tempFilePath = tempPath.getPath() + "/" + fileName;
                 final String projectFilePath = projectPath.getPath();
 
-                final String serverURL  = ((MainActivity) context).getMainController().getServerURL();
+                final String serverURL  = ((TerraMobileApp) context).getTerraMobileAppController().getServerURL();
 
                 if(serverURL==null)
                 {
@@ -221,7 +221,7 @@ public class ProjectListAdapter extends ArrayAdapter<Project> implements Adapter
                     builder.setPositiveButton(R.string.yes,
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    downloadTask = (DownloadTask) new DownloadTask(tempFilePath, projectFilePath, fileName, project.getUUID(), project.getStatus(), (MainActivity) context).execute(serverURL + "downloadproject");
+                                    downloadTask = (DownloadTask) new DownloadTask(tempFilePath, projectFilePath, fileName, project.getUUID(), project.getStatus(), (TerraMobileApp) context).execute(serverURL + "downloadproject");
 //                              else
 //                                   Message.showErrorMessage(context, R.string.error, R.string.not_logged);
                                 }
@@ -236,12 +236,12 @@ public class ProjectListAdapter extends ArrayAdapter<Project> implements Adapter
                     alertDialog.show();
                 }
                 else {
-                    downloadTask = (DownloadTask) new DownloadTask(tempFilePath, projectFilePath, fileName, project.getUUID(), project.getStatus(), (MainActivity) context).execute(serverURL + "downloadproject");
+                    downloadTask = (DownloadTask) new DownloadTask(tempFilePath, projectFilePath, fileName, project.getUUID(), project.getStatus(), (TerraMobileApp) context).execute(serverURL + "downloadproject");
 //                else
 //                    Message.showErrorMessage(context, R.string.error, R.string.not_logged);
                 }
             } else
-                Message.showErrorMessage((MainActivity) context, R.string.error, R.string.no_connection);
+                Message.showErrorMessage((TerraMobileApp) context, R.string.error, R.string.no_connection);
 
         }
     };
@@ -253,10 +253,10 @@ public class ProjectListAdapter extends ArrayAdapter<Project> implements Adapter
 
                 UploadProjectFragment uploadFragment = UploadProjectFragment.newInstance();
                 uploadFragment.setProject(project);
-                uploadFragment.show(((MainActivity) context).getFragmentManager(), "packageList");
+                uploadFragment.show(((TerraMobileApp) context).getFragmentManager(), "packageList");
 
             } else {
-                Message.showErrorMessage((MainActivity) context, R.string.error, R.string.no_connection);
+                Message.showErrorMessage((TerraMobileApp) context, R.string.error, R.string.no_connection);
             }
 
         }
@@ -273,18 +273,18 @@ public class ProjectListAdapter extends ArrayAdapter<Project> implements Adapter
             {
 
                 try {
-                    success = ((MainActivity) context).getMainController().setCurrentProject(newCurrentProject);
+                    success = ((TerraMobileApp) context).getTerraMobileAppController().setCurrentProject(newCurrentProject);
                 } catch (InvalidAppConfigException e)
                 {
                     e.printStackTrace();
-                    Message.showErrorMessage(((MainActivity) context), R.string.error, e.getMessage());
+                    Message.showErrorMessage(((TerraMobileApp) context), R.string.error, e.getMessage());
                 }
 
 
             }
             else
             {
-                Message.showErrorMessage((MainActivity) context, R.string.error, R.string.download_project_first);
+                Message.showErrorMessage((TerraMobileApp) context, R.string.error, R.string.download_project_first);
             }
             if(!success)
             {
@@ -347,37 +347,37 @@ public class ProjectListAdapter extends ArrayAdapter<Project> implements Adapter
                                 if (project != null && file != null) {
                                     if (projectDAO.remove(project.getId())) {
                                         if (file.delete()) {
-                                            if (((MainActivity) context).getMainController().getCurrentProject().toString().equals(projectName)) {
+                                            if (((TerraMobileApp) context).getTerraMobileAppController().getCurrentProject().toString().equals(projectName)) {
                                                 try {
                                                     if (Util.getGeoPackageFiles(directory, context.getString(R.string.geopackage_extension)).size() > 0)
-                                                        ((MainActivity) context).getMainController().setCurrentProject(projectDAO.getFirstProject());
+                                                        ((TerraMobileApp) context).getTerraMobileAppController().setCurrentProject(projectDAO.getFirstProject());
                                                     else {
-                                                        ((MainActivity) context).getMainController().setCurrentProject(null);
+                                                        ((TerraMobileApp) context).getTerraMobileAppController().setCurrentProject(null);
                                                     }
                                                 } catch (InvalidAppConfigException e) {
                                                     e.printStackTrace();
-                                                    Message.showErrorMessage((MainActivity) context, R.string.error, e.getMessage());
+                                                    Message.showErrorMessage((TerraMobileApp) context, R.string.error, e.getMessage());
                                                 }
                                             }
-                                            Message.showSuccessMessage((MainActivity) context, R.string.success, R.string.project_removed_successfully);
+                                            Message.showSuccessMessage((TerraMobileApp) context, R.string.success, R.string.project_removed_successfully);
                                             if (!Util.isConnected(context)) {
                                                 ProjectListAdapter.this.remove(project);
                                                 projectList.remove(position);
                                             }
                                             notifyDataSetChanged();
                                         } else {
-                                            Message.showSuccessMessage((MainActivity) context, R.string.success, R.string.error_removing_project);
+                                            Message.showSuccessMessage((TerraMobileApp) context, R.string.success, R.string.error_removing_project);
                                             projectDAO.insert(project);
                                         }
                                     } else
-                                        Message.showSuccessMessage((MainActivity) context, R.string.success, R.string.error_removing_project);
+                                        Message.showSuccessMessage((TerraMobileApp) context, R.string.success, R.string.error_removing_project);
                                 } else
-                                    Message.showSuccessMessage((MainActivity) context, R.string.success, R.string.error_removing_project);
+                                    Message.showSuccessMessage((TerraMobileApp) context, R.string.success, R.string.error_removing_project);
 
                             } catch (InvalidAppConfigException e) {
-                                Message.showErrorMessage((MainActivity)context, R.string.error, e.getMessage());
+                                Message.showErrorMessage((TerraMobileApp)context, R.string.error, e.getMessage());
                             } catch (DAOException e) {
-                                Message.showErrorMessage((MainActivity)context, R.string.error, e.getMessage());
+                                Message.showErrorMessage((TerraMobileApp)context, R.string.error, e.getMessage());
                             }
                         }
                     });

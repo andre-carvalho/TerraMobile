@@ -42,12 +42,12 @@ import br.org.funcate.terramobile.util.GeoUtil;
 public class MenuMapController {
 
     private final Context context;
-    private MainController mainController;
+    private TerraMobileAppController terraMobileAppController;
     private MapFragment mapFragment;
 
-    public MenuMapController(Context context, MainController mainController) {
+    public MenuMapController(Context context, TerraMobileAppController terraMobileAppController) {
         this.context=context;
-        this.mainController = mainController;
+        this.terraMobileAppController = terraMobileAppController;
     }
 
     private void addBaseLayer(GpkgLayer child) {
@@ -61,7 +61,7 @@ public class MenuMapController {
                 MapTileModuleProviderBase moduleProvider = new MapTileGeoPackageProvider(tileSource, child.getName(), child.getGeoPackage());
                 SimpleRegisterReceiver simpleReceiver = new SimpleRegisterReceiver(context);
 
-                MapTileProviderArray tileProviderArray = new MapTileProviderArrayGeoPackage(tileSource, simpleReceiver, new MapTileModuleProviderBase[] { moduleProvider }, ((MainActivity) this.context).getMainController().getMapFragment());
+                MapTileProviderArray tileProviderArray = new MapTileProviderArrayGeoPackage(tileSource, simpleReceiver, new MapTileModuleProviderBase[] { moduleProvider }, ((TerraMobileApp) this.context).getTerraMobileAppController().getMapFragment());
                 tileProviderArray.setTileRequestCompleteHandler(new TerraMobileInvalidationHandler(null));
                 final TilesOverlay tilesOverlay = new TilesOverlay(tileProviderArray, context);
                 tilesOverlay.setLoadingBackgroundColor(Color.TRANSPARENT);
@@ -131,8 +131,8 @@ public class MenuMapController {
             MapView mapView = mapFragment.getMapView();
 
             Style defaultStyle = StyleService.loadStyle(context, child.getGeoPackage().getDatabaseFileName(), child);
-            System.out.println("======================§§§§§§§ USE NEW OVERLAY SFS = " + ((MainActivity) context).useNewOverlaySFS);
-            if(!((MainActivity) context).useNewOverlaySFS)
+            System.out.println("======================§§§§§§§ USE NEW OVERLAY SFS = " + ((TerraMobileApp) context).useNewOverlaySFS);
+            if(!((TerraMobileApp) context).useNewOverlaySFS)
             {
                 SFSLayer l = AppGeoPackageService.getFeatures(child);
 
@@ -198,14 +198,14 @@ public class MenuMapController {
 
     public void updateOverlaysOrder(ArrayList<GpkgLayer> orderedLayers) throws SettingsException, InvalidAppConfigException {
         MapView mapView = mapFragment.getMapView();
-        boolean hasGPSLayer = this.mainController.getGpsOverlayController().isOverlayAdded();
+        boolean hasGPSLayer = this.terraMobileAppController.getGpsOverlayController().isOverlayAdded();
         // Unregister the listener to service Location and remove GPS Overlay
-        if(hasGPSLayer) this.mainController.getGpsOverlayController().removeGPSTrackerLayer();
+        if(hasGPSLayer) this.terraMobileAppController.getGpsOverlayController().removeGPSTrackerLayer();
         LayersService.sortOverlayByGPKGLayer(mapView.getOverlays(), orderedLayers);
         // registered Listener to service Location and added GPS Overlay
-        if(hasGPSLayer) this.mainController.getGpsOverlayController().addGPSTrackerLayer();
+        if(hasGPSLayer) this.terraMobileAppController.getGpsOverlayController().addGPSTrackerLayer();
         mapView.invalidate();
-        LayersService.updateLayerSettings(context, mainController.getCurrentProject(), orderedLayers);
+        LayersService.updateLayerSettings(context, terraMobileAppController.getCurrentProject(), orderedLayers);
     }
 
 
@@ -213,24 +213,24 @@ public class MenuMapController {
         layer.setEnabled(true);
         addLayer(layer);
         if(layer.isEditable()) {
-            mainController.getTreeViewController().setSelectedEditableLayer(layer);
+            terraMobileAppController.getTreeViewController().setSelectedEditableLayer(layer);
         }
         //Correct the layer order by the GPKGLayer index.
-        updateOverlaysOrder(LayersService.composeLinearLayerList(mainController.getTreeViewController().getLayersWithGroups()));
+        updateOverlaysOrder(LayersService.composeLinearLayerList(terraMobileAppController.getTreeViewController().getLayersWithGroups()));
     }
 
     public void disableLayer(GpkgLayer layer) throws SettingsException, InvalidAppConfigException {
         layer.setEnabled(false);
         removeLayer(layer);
         if(layer.isEditable()) {
-            mainController.getMarkerInfoWindowController().closeAllInfoWindows();
+            terraMobileAppController.getMarkerInfoWindowController().closeAllInfoWindows();
         }
         //Correct the layer order by the GPKGLayer index.
-        updateOverlaysOrder(LayersService.composeLinearLayerList(mainController.getTreeViewController().getLayersWithGroups()));
+        updateOverlaysOrder(LayersService.composeLinearLayerList(terraMobileAppController.getTreeViewController().getLayersWithGroups()));
     }
 
-    public MainController getMainController() {
-        return mainController;
+    public TerraMobileAppController getTerraMobileAppController() {
+        return terraMobileAppController;
     }
 
 
